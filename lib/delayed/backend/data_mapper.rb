@@ -43,7 +43,8 @@ module Delayed
         end
 
         def self.find_available(worker_name, limit = 5, max_run_time = Worker.max_run_time)
-          simple_conditions = {:limit => limit, :order => [:priority.asc, :run_at.asc]}
+          simple_conditions = {:limit => limit, :order => [:priority.asc, :run_at.asc],
+          :run_at.lte => Time::now.utc}
           simple_conditions[:priority.gte] = Worker.min_priority if Worker.min_priority # these seem
           simple_conditions[:priority.lte] = Worker.max_priority if Worker.max_priority # reversed to me
           simple_conditions[:queue] = Worker.queues if Worker.queues.any?
